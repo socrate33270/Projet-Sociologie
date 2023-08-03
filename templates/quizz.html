@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz</title>
+    <head>
+    <title>SocioloGenius</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">SocioloGenius</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/cours">Cours</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/fiche">Fiches</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/quizz">Quizz</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/contact">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <h1>Qui veut devenir sociologue?</h1>
+    <button type="button" id="joker1" onclick="useJoker1()">50/50</button>
+    <button type="button" id="joker2" onclick="useJoker2()">Joker 2</button>
+    <button type="button" id="joker3" onclick="useJoker3()">Joker 3</button>
+    <form action="/submit_quizz" method="POST">
+        {% for question in questions %}
+       {% for question in questions %}
+<div>
+    <p><strong>{{ question.text }}</strong></p> <!-- Question text is now bold -->
+    <button type="button" onclick="applyFiftyFifty(this)" class="fifty-fifty" data-correct-option="{{ question.correct_option }}">50-50</button>
+    {% for i in range(4) %}
+    <div class="option">
+        <input type="radio" id="q{{ question.id }}_option{{ i+1 }}" name="question{{ question.id }}" value="{{ i+1 }}">
+        <label for="q{{ question.id }}_option{{ i+1 }}">{{ question.options[i] }}</label>
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+            
+        </div>
+        {% endfor %}
+        <input type="submit" value="Submit Quiz">
+    </form>
+    <script>
+        function useJoker1() {
+            // Code to use joker 1 goes here
+        }
+
+        function useJoker2() {
+            // Code to use joker 2 goes here
+        }
+
+        function useJoker3() {
+            // Code to use joker 3 goes here
+        }
+        
+        function applyFiftyFifty(button) {
+            var options = button.parentNode.getElementsByClassName('option');
+            var correctOption = parseInt(button.getAttribute('data-correct-option'));
+            var optionsToRemove = 2;
+    
+            for (var i = 0; i < options.length; i++) {
+                if (optionsToRemove === 0) {
+                    break;
+                }
+    
+                var input = options[i].getElementsByTagName('input')[0];
+    
+                if (parseInt(input.value) !== correctOption) {
+                    options[i].style.display = 'none';
+                    optionsToRemove--;
+                }
+            }
+    
+            button.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
