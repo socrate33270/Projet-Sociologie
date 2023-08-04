@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.expression import func
-
+import os
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///messages.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///messages.db')
 db = SQLAlchemy(app)
 
 class Message(db.Model): 
@@ -33,10 +33,7 @@ def fiche():
 
 @app.route('/quizz')
 def quizz():
-    # Get all questions in random order
     questions = Question.query.order_by(func.random()).all()
-
-    # Convert the questions to a format that can be sent as JSON
     questions_dict = []
     for question in questions:
         question_dict = {
@@ -46,8 +43,6 @@ def quizz():
             'correct_option': question.correct_option
         }
         questions_dict.append(question_dict)
-
-    # Render the quiz page and pass the questions to it
     return render_template('quizz.html', questions=questions_dict)
 
 @app.route('/submit_quizz', methods=['POST'])
@@ -57,13 +52,12 @@ def submit_quizz():
     for question in questions:
         user_answer = request.form.get('question' + str(question.id))
         if user_answer is None:
-            user_answer = 0  # Set a default value if no answer was selected
+            user_answer = 0
         else:
             user_answer = int(user_answer)
         if question.correct_option == user_answer:
             score += 1
     return render_template('quizz_results.html', score=score)
-
 
 @app.route('/cours')
 def cours():
@@ -86,7 +80,6 @@ def inscription():
     if request.method == 'POST':
         name = request.form.get('name')
         email = request.form.get('email')
-        # Here you might want to add code to create a new student in your database
         return render_template('confirmation.html', name=name)
     return render_template('inscription.html')
 
